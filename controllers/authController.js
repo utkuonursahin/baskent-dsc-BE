@@ -29,7 +29,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     role:req.body.role,
-    title:req.body.title,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
@@ -123,8 +122,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 })
 
 exports.invite = catchAsync(async(req,res,next)=> {
-  /*findOneAndReplace or findOneAndUpdate could be used instead of deleting old keys then creating the new one
-  However, in this way it's more secure and future-friendly.*/
   await InviteKey.deleteMany({active:{$ne:true}});
   const inviteKey = await InviteKey.create({});
   //createInviteToken returns a not hashed version of randomly created token
@@ -137,11 +134,9 @@ exports.invite = catchAsync(async(req,res,next)=> {
 })
 
 exports.isInvited = catchAsync(async (req, res, next) => {
-  const inviteKey = await InviteKey.findOne({active:{$ne:false}})
-  if(!inviteKey) return next(new AppError('This invite key is already used or expired.', 403))
-  //Get not hashed token from req.body, then hash it and compare it with the key on the database
   const hashedToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
-  if(inviteKey.key !== hashedToken) return next(new AppError('This invite key is invalid!', 401))
+  const inviteKey = await InviteKey.findOne({active:{$ne:false},key:hashedToken});
+  if(!inviteKey) return next(new AppError('This invite key is invalid or already used.', 403));
   //Mark key as inactive for delete it, when invite function works next time;
   inviteKey.active = false;
   await inviteKey.save();

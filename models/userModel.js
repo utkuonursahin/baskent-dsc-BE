@@ -24,11 +24,6 @@ const userSchema = new mongoose.Schema({
     enum: ['head-admin', 'admin'],
     default: 'admin',
   },
-  title:{
-    type: String,
-    enum:['Başkan','Başkan Yardımcısı','Yönetim Kurulu Üyesi','Denetleme Kurulu Üyesi','Asil Üye'],
-    required: [true, 'An user must have a title'],
-  },
   password: {
     type: String,
     required: [true, 'A user must have a password'],
@@ -48,7 +43,6 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
-  //inviteToken:String
 })
 
 userSchema.pre('save', async function (next) {

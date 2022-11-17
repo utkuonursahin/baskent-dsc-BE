@@ -9,8 +9,9 @@ const inviteKeySchema = new mongoose.Schema({
     select:false
   },
   key:String,
-  expiresAt:{
+  expireAt:{
     type:Date,
+    expires: process.env.INVITE_KEY_EXPIRES_IN * 60,
     default:new Date(Date.now() + process.env.INVITE_KEY_EXPIRES_IN * 60 * 1000)
   },
   active:{
@@ -18,12 +19,6 @@ const inviteKeySchema = new mongoose.Schema({
     default:true
   }
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}})
-//Set timeout for deleting invite key by default.
-inviteKeySchema.pre('save', function (next) {
-  if (!this.active) return next();
-  setTimeout(()=>this.remove(),this.expiresAt - Date.now());
-  next();
-})
 
 inviteKeySchema.methods.createInviteToken = function(){
   const token = crypto.randomBytes(64).toString('hex').slice(0, 8).toUpperCase();
@@ -31,7 +26,7 @@ inviteKeySchema.methods.createInviteToken = function(){
   return token;
 }
 
-//Creating Activity model
-const inviteKey = mongoose.model('InviteKey',inviteKeySchema);
+//Creating inviteKey model
+const InviteKey = mongoose.model('InviteKey',inviteKeySchema);
 //Module export
-module.exports = inviteKey;
+module.exports = InviteKey;
