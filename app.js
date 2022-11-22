@@ -12,7 +12,7 @@ const cors = require('cors');
 const AppError = require('./utils/appError');
 const globalErrorController = require('./controllers/errorController');
 
-const activityRouter = require('./routes/activityRoutes');
+const announcementRouter = require('./routes/announcementRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const limiter = rateLimit({
@@ -45,7 +45,7 @@ app.use(hpp({whitelist: ['name']}));
 //Compress text responses
 app.use(compression())
 //Routes
-app.use('/api/v1/activities', activityRouter);
+app.use('/api/v1/announcements', announcementRouter);
 app.use('/api/v1/users', userRouter);
 app.all('*', (req, res, next) => next(new AppError(`Bu sunucuda ${req.originalUrl} adresi bulunamadı!`, 404)))
 //Global error handling
