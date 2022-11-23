@@ -25,10 +25,9 @@ const app = express();
 // Global Middlewares
 
 //Implement CORS
-/*app.use(cors())
-app.options('*', cors())*/
+app.use(cors())
 //Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 //Set security HTTP headers
 app.use(helmet());
 //Limit requests from same IP

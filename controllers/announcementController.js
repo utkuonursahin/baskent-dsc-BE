@@ -18,8 +18,7 @@ const upload = multer({
 });
 
 exports.uploadAnnouncementImages = upload.fields([
-  {name: 'imageCover', maxCount: 1},
-  {name: 'images', maxCount: 3}
+  {name: 'imageCover', maxCount: 1}
 ])
 
 exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
@@ -30,7 +29,7 @@ exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
     .resize(2000, 1333)
     .toFormat('jpeg')
     .jpeg({quality: 90})
-    .toFile(`public/img/announcements/${req.body.imageCover}`);
+    .toFile(`public/images/${req.body.imageCover}`);
   next()
 })
 
