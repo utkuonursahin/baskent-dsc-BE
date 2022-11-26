@@ -1,6 +1,6 @@
 const Announcement = require('../models/announcementModel');
-const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const multer = require("multer");
 const sharp = require("sharp");
@@ -33,47 +33,8 @@ exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
   next()
 })
 
-exports.getAllAnnouncements = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Announcement.find(), req.query).filter().sort().limitFields().paginate()
-  const announcements = await features.query
-  res.status(200).json({
-    status: 'success',
-    results: announcements.length,
-    data: {announcements}
-  })
-})
-
-exports.createAnnouncement = catchAsync(async (req, res, next) => {
-  const newAnnouncement = await Announcement.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {newAnnouncement}
-  })
-})
-
-exports.getAnnouncement = catchAsync(async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id);
-  if (!announcement) return next(new AppError('No Announcement found with that ID', 404));
-  res.status(200).json({
-    status: 'success',
-    data: {announcement}
-  })
-})
-
-exports.updateAnnouncement = catchAsync(async (req, res, next) => {
-  const announcement = await Announcement.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
-  if (!announcement) return next(new AppError('No Announcement found with that ID', 404));
-  res.status(200).json({
-    status: 'success',
-    data: {announcement}
-  })
-})
-
-exports.deleteAnnouncement = catchAsync(async (req, res, next) => {
-  const announcement = await Announcement.findByIdAndDelete(req.params.id);
-  if (!announcement) return next(new AppError('No Announcement found with that ID', 404));
-  res.status(204).json({
-    status: 'success',
-    data: null
-  })
-})
+exports.getAllAnnouncements = factory.getAll(Announcement);
+exports.getAnnouncement = factory.getOne(Announcement);
+exports.createAnnouncement = factory.createOne(Announcement);
+exports.updateAnnouncement = factory.updateOne(Announcement);
+exports.deleteAnnouncement = factory.deleteOne(Announcement);
