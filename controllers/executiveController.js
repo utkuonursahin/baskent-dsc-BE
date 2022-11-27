@@ -17,16 +17,13 @@ const upload = multer({
   fileFilter: multerFilter
 });
 
-exports.uploadExecutiveImage = upload.fields([
-  {name: 'photo', maxCount: 1}
-])
+exports.uploadExecutiveImage = upload.single('photo')
 
 exports.resizeExecutiveImage = catchAsync(async (req, res, next) => {
-  if (!req.files.photo) return next();
-  // 1) Cover image
-  req.body.photo = `executive-${req.params.id}-${Date.now()}-cover.jpeg`
-  await sharp(req.files.photo[0].buffer)
-    .resize(2000, 1333)
+  if (!req.file) return next();
+  req.body.photo = `executive-${req.params.id}-${Date.now()}.jpeg`
+  await sharp(req.file.buffer)
+    .resize(1333, 2000)
     .toFormat('jpeg')
     .jpeg({quality: 90})
     .toFile(`public/images/executives/${req.body.photo}`);

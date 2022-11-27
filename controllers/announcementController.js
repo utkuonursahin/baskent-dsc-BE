@@ -17,15 +17,12 @@ const upload = multer({
   fileFilter: multerFilter
 });
 
-exports.uploadAnnouncementImages = upload.fields([
-  {name: 'imageCover', maxCount: 1}
-])
+exports.uploadAnnouncementImages = upload.single('imageCover')
 
 exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
-  if (!req.files.imageCover) return next();
-  // 1) Cover image
+  if (!req.file) return next();
   req.body.imageCover = `announcement-${req.params.id}-${Date.now()}-cover.jpeg`
-  await sharp(req.files.imageCover[0].buffer)
+  await sharp(req.file.buffer)
     .resize(2000, 1333)
     .toFormat('jpeg')
     .jpeg({quality: 90})
