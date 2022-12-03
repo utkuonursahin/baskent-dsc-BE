@@ -14,7 +14,7 @@ const executivesSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    enum: ['Başkan', 'Başkan Yardımcısı', 'Yönetim Kurulu Üyesi', 'Asil Üye'],
+    enum: ['Başkan', 'Başkan Yardımcısı', 'Yönetim Kurulu Üyesi', 'Genel Sekreter', 'Denetleme Kurulu Başkanı', 'Denetleme Kurulu Üyesi', 'Asil Üye'],
     required: [true, 'An user must have a title'],
   },
   photo: {

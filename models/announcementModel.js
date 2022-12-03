@@ -10,24 +10,26 @@ const announcementSchema = new mongoose.Schema({
   description: {
     type: String,
     trim: true,
-    required: [true, 'An Announcement must have an description']
+    required: [true, 'An announcement must have an description'],
+    trim: true
   },
   imageCover: {
     type: String,
-    required: [true, 'An activity must have an imageCover'],
+    required: [true, 'An announcement must have an imageCover'],
   },
-  title: {
+  name: {
     type: String,
-    required: [true, 'An activity must have a title']
+    required: [true, 'An announcement must have a title'],
+    unique: true
   },
   summary: {
     type: String,
     trim: true,
-    required: [true, 'An activity must have a summary']
+    required: [true, 'An announcement must have a summary']
   },
   date: {
     type: Date,
-    required: [true, 'An activity must have a date']
+    required: [true, 'An announcement must have a date']
   }
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}})
 //Creating index
