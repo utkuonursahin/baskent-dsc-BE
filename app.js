@@ -26,7 +26,7 @@ const app = express();
 // Global Middlewares
 
 //Implement CORS
-app.use(cors())
+app.use(cors({credentials: true, origin: process.env.CLIENT_URL}))
 //Serving static files
 app.use('/static', express.static(path.join(__dirname, 'public')));
 //Set security HTTP headers

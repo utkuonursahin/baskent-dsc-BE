@@ -28,7 +28,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
-    role:req.body.role,
+    role: req.body.role,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
@@ -68,6 +68,30 @@ exports.protect = catchAsync(async (req, res, next) => {
   //GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
   next()
+})
+
+//Only for rendered pages, no errors!
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+      const currentUser = await User.findById(decoded.id)
+      if (!currentUser) return next()
+      if (currentUser.changedPasswordAfter(decoded.iat)) return next()
+      //There is a logged in user
+      res.status(200).json({
+        status: 'success',
+        data: currentUser
+      });
+    } catch (error) {
+      return next()
+    }
+  } else {
+    res.status(404).json({
+      status: 'fail',
+      data: null
+    });
+  }
 })
 
 exports.restrictTo = (...roles) => {
@@ -121,22 +145,22 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, req, res)
 })
 
-exports.invite = catchAsync(async(req,res,next)=> {
-  await InviteKey.deleteMany({active:{$ne:true}});
+exports.invite = catchAsync(async (req, res, next) => {
+  await InviteKey.deleteMany({active: {$ne: true}});
   const inviteKey = await InviteKey.create({});
   //createInviteToken returns a not hashed version of randomly created token
   const inviteToken = inviteKey.createInviteToken();
   await inviteKey.save();
   res.status(201).json({
     status: 'success',
-    data: { inviteToken }
+    data: {inviteToken}
   })
 })
 
 exports.isInvited = catchAsync(async (req, res, next) => {
   const hashedToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
-  const inviteKey = await InviteKey.findOne({active:{$ne:false},key:hashedToken});
-  if(!inviteKey) return next(new AppError('This invite key is invalid or already used.', 403));
+  const inviteKey = await InviteKey.findOne({active: {$ne: false}, key: hashedToken});
+  if (!inviteKey) return next(new AppError('This invite key is invalid or already used.', 403));
   //Mark key as inactive for delete it, when invite function works next time;
   inviteKey.active = false;
   await inviteKey.save();
