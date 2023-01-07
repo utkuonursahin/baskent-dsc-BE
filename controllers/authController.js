@@ -69,27 +69,25 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next()
 })
-
-//Only for rendered pages, no errors!
+//For ensuring that only logged in users can access certain routes
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
   if (req.cookies.jwt) {
     try {
       const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
       const currentUser = await User.findById(decoded.id)
-      if (!currentUser) return next()
-      if (currentUser.changedPasswordAfter(decoded.iat)) return next()
-      //There is a logged in user
+      if (!currentUser) return next(new AppError('The user belonging to this token does not exist', 401))
+      if (currentUser.changedPasswordAfter(decoded.iat)) return next(new AppError('User recently changed password. Please log in again', 401))
+      //There is a logged in user, return true.
       res.status(200).json({
         status: 'success',
-        data: currentUser
+        data: true
       });
-    } catch (error) {
-      return next()
-    }
+    } catch (error) {return next(error)}
   } else {
-    res.status(404).json({
-      status: 'fail',
-      data: null
+    //There is no logged in user, return false.
+    res.status(200).json({
+      status: 'success',
+      data: false
     });
   }
 })
@@ -153,7 +151,7 @@ exports.invite = catchAsync(async (req, res, next) => {
   await inviteKey.save();
   res.status(201).json({
     status: 'success',
-    data: {inviteToken}
+    data: {data: inviteToken}
   })
 })
 

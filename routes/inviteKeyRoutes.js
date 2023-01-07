@@ -7,13 +7,15 @@ const router = express.Router();
 router.use(authController.protect);
 router.use(authController.restrictTo('head-admin'));
 
+router.get('/invite', authController.invite)
+
 router.route('/')
-  .get('/', inviteKeyController.getAllInviteKeys)
-  .post('/', inviteKeyController.updateInviteKey);
+  .get(inviteKeyController.getAllInviteKeys)
+  .post(inviteKeyController.createInviteKey); //This route is not supported, it is just for reference
 
 router.route('/:id')
   .get(inviteKeyController.getInviteKey)
-  .patch(inviteKeyController.updateInviteKey)
+  .patch(inviteKeyController.updateInviteKey) //This route is not supported, it is just for reference
   .delete(inviteKeyController.deleteInviteKey);
 
 module.exports = router

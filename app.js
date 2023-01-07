@@ -15,6 +15,7 @@ const globalErrorController = require('./controllers/errorController');
 const announcementRouter = require('./routes/announcementRoutes');
 const executiveRouter = require('./routes/executiveRoutes');
 const userRouter = require('./routes/userRoutes');
+const inviteKeyRouter = require('./routes/inviteKeyRoutes');
 
 const limiter = rateLimit({
   max: 50, // 50req/hr
@@ -48,6 +49,7 @@ app.use(compression())
 app.use('/api/v1/announcements', announcementRouter);
 app.use('/api/v1/executives', executiveRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/inviteKeys', inviteKeyRouter);
 app.all('*', (req, res, next) => next(new AppError(`Bu sunucuda ${req.originalUrl} adresi bulunamadı!`, 404)))
 //Global error handling
 app.use(globalErrorController);
