@@ -14,6 +14,7 @@ router.post('/', announcementController.createAnnouncement);
 router.route('/:id')
   .patch(
     announcementController.uploadAnnouncementImages,
+    announcementController.deleteAnnouncementImages,
     announcementController.resizeAnnouncementImages,
     announcementController.updateAnnouncement)
   .delete(announcementController.deleteAnnouncement);

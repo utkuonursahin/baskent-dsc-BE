@@ -13,6 +13,7 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 //Protect all after middlewares from this point
 router.use(authController.protect)
 router.use(authController.restrictTo('head-admin', 'admin'))
+router.get('/me', userController.getMe, userController.getUser);
 router.patch('/updateMyPassword', authController.updatePassword);
 
 //Below routes only accessible to head-admins

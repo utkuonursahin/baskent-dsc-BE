@@ -19,7 +19,7 @@ const announcementSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    required: [true, 'An announcement must have a title'],
+    required: [true, 'An announcement must have a name'],
     unique: true
   },
   summary: {

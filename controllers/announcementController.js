@@ -4,6 +4,7 @@ const factory = require('./handlerFactory');
 const catchAsync = require('../utils/catchAsync');
 const multer = require("multer");
 const sharp = require("sharp");
+const fs = require("fs");
 
 const multerStorage = multer.memoryStorage();
 
@@ -29,6 +30,13 @@ exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
     .toFile(`public/images/announcements/${req.body.imageCover}`);
   next()
 })
+
+exports.deleteAnnouncementImages = async (req, res, next) => {
+  if (req.file) {
+    const announcement = await Announcement.findById(req.params.id)
+    fs.unlink(`public/images/announcements/${announcement.imageCover}`, (err) => next())
+  } else return next()
+}
 
 exports.getAllAnnouncements = factory.getAll(Announcement);
 exports.getAnnouncement = factory.getOne(Announcement);
