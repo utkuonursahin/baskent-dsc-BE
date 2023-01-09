@@ -30,7 +30,8 @@ const announcementSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: [true, 'An announcement must have a date']
-  }
+  },
+  link: String,
 }, {toJSON: {virtuals: true}, toObject: {virtuals: true}})
 //Creating index
 announcementSchema.index({createdAt: 1});

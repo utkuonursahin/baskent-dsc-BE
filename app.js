@@ -18,7 +18,7 @@ const userRouter = require('./routes/userRoutes');
 const inviteKeyRouter = require('./routes/inviteKeyRoutes');
 
 const limiter = rateLimit({
-  max: 50, // 50req/hr
+  max: 100, // 100req/hr
   windowMs: 60 * 60 * 1000,
   message: 'Mevcut IP adresinden çok fazla istekte bulundunuz, lütfen bir saat sonra tekrar deneyin.'
 });

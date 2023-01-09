@@ -9,7 +9,10 @@ router.get('/:id', announcementController.getAnnouncement);
 router.use(authController.protect);
 router.use(authController.restrictTo('admin', 'head-admin'));
 
-router.post('/', announcementController.createAnnouncement);
+router.post('/',
+  announcementController.uploadAnnouncementImages,
+  announcementController.resizeAnnouncementImages,
+  announcementController.createAnnouncement);
 
 router.route('/:id')
   .patch(
@@ -17,6 +20,9 @@ router.route('/:id')
     announcementController.deleteAnnouncementImages,
     announcementController.resizeAnnouncementImages,
     announcementController.updateAnnouncement)
-  .delete(announcementController.deleteAnnouncement);
+  .delete(
+    announcementController.deleteAnnouncementImages,
+    announcementController.deleteAnnouncement
+  );
 
 module.exports = router
