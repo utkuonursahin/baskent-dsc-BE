@@ -9,14 +9,21 @@ router.get('/', executiveController.getAllExecutives)
 router.use(authController.protect);
 router.use(authController.restrictTo('head-admin'));
 
-router.post('/', executiveController.createExecutive);
+router.post('/',
+  executiveController.uploadExecutiveImage,
+  executiveController.resizeExecutiveImage,
+  executiveController.createExecutive);
 
 router.route('/:id')
   .get(executiveController.getExecutive)
   .patch(
     executiveController.uploadExecutiveImage,
+    //Delete old image from the file system
+    executiveController.deleteExecutiveImage,
     executiveController.resizeExecutiveImage,
     executiveController.updateExecutive)
-  .delete(executiveController.deleteExecutive);
+  .delete(
+    executiveController.deleteExecutiveImage,
+    executiveController.deleteExecutive);
 
 module.exports = router
