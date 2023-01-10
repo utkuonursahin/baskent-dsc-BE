@@ -9,10 +9,7 @@ router.get('/', executiveController.getAllExecutives)
 router.use(authController.protect);
 router.use(authController.restrictTo('head-admin'));
 
-router.post('/',
-  executiveController.uploadExecutiveImage,
-  executiveController.resizeExecutiveImage,
-  executiveController.createExecutive);
+router.post('/', executiveController.createExecutive);
 
 router.route('/:id')
   .get(executiveController.getExecutive)

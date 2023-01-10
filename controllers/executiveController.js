@@ -31,9 +31,10 @@ exports.resizeExecutiveImage = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteExecutiveImage = async (req, res, next) => {
-  const executive = await Executive.findById(req.params.id)
-  fs.unlink(`public/images/executives/${executive.photo}`, (err) => {if (err) {next(err)} })
-  return next()
+  if (req.file) {
+    const executive = await Executive.findById(req.params.id)
+    fs.unlink(`public/images/executives/${executive.photo}`, (err) => {next()})
+  } else return next()
 }
 
 exports.getAllExecutives = factory.getAll(Executive);

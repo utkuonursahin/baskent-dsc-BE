@@ -32,9 +32,10 @@ exports.resizeAnnouncementImages = catchAsync(async (req, res, next) => {
 })
 
 exports.deleteAnnouncementImages = async (req, res, next) => {
-  const announcement = await Announcement.findById(req.params.id)
-  fs.unlink(`public/images/announcements/${announcement.imageCover}`, (err) => {if (err) {next(err)} })
-  return next()
+  if (req.file) {
+    const announcement = await Announcement.findById(req.params.id)
+    fs.unlink(`public/images/announcements/${announcement.imageCover}`, (err) => {next()})
+  } else return next()
 }
 
 exports.getAllAnnouncements = factory.getAll(Announcement);

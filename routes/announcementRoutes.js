@@ -9,10 +9,7 @@ router.get('/:id', announcementController.getAnnouncement);
 router.use(authController.protect);
 router.use(authController.restrictTo('admin', 'head-admin'));
 
-router.post('/',
-  announcementController.uploadAnnouncementImages,
-  announcementController.resizeAnnouncementImages,
-  announcementController.createAnnouncement);
+router.post('/', announcementController.createAnnouncement);
 
 router.route('/:id')
   .patch(
